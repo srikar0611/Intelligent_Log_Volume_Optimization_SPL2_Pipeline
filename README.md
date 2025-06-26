@@ -10,7 +10,7 @@
 
 <div align="center">
 
-![Demo Video](./assets/demo.mp4)
+![Demo GIF](./assets/demo.gif)
 
 *Watch the Intelligent Log Optimization Pipeline in action - Real-time log processing and volume reduction*
 
