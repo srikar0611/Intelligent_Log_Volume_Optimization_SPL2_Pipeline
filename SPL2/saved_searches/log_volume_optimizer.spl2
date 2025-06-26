@@ -1,0 +1,22 @@
+index=_internal earliest=-5m@m latest=now
+| intelligent_sampling
+| where should_keep=1
+| eval target_index=case(
+    log_type="security", "main_security",
+    log_type="operational", "main_operational", 
+    log_type="debug", "main_debug",
+    1=1, "main_operational"
+)
+| collect index=main_security source="optimized_logs" testmode=false marker="log_type=\"security\"" 
+| append [
+    search index=_internal earliest=-5m@m latest=now
+    | intelligent_sampling
+    | where should_keep=1 AND log_type="operational"
+    | collect index=main_operational source="optimized_logs" testmode=false marker="log_type=\"operational\""
+]
+| append [
+    search index=_internal earliest=-5m@m latest=now
+    | intelligent_sampling
+    | where should_keep=1 AND log_type="debug"
+    | collect index=main_debug source="optimized_logs" testmode=false marker="log_type=\"debug\""
+]

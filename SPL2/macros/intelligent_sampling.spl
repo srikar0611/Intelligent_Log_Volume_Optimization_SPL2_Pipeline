@@ -1,0 +1,12 @@
+log_classification 
+| eval log_size=len(_raw)
+| eval storage_tier=case(
+    criticality>=8, "HOT",
+    criticality>=5, "WARM", 
+    1=1, "COLD"
+)
+| eval retention_days=case(
+    storage_tier="HOT", 90,
+    storage_tier="WARM", 365,
+    storage_tier="COLD", 2555
+)

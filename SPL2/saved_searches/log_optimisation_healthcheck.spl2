@@ -1,0 +1,6 @@
+index=main* earliest=-1h@h latest=now 
+| intelligent_sampling
+| stats count as total_logs, 
+        sum(eval(if(should_keep=0, 1, 0))) as filtered_logs
+| eval reduction_percent=round((filtered_logs/total_logs)100, 1)
+| where reduction_percent < 30

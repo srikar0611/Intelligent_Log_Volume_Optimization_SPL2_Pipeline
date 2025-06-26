@@ -1,0 +1,22 @@
+index=main earliest=-30m@m latest=now
+| log_classification
+| intelligent_sampling
+| where should_keep=1
+| eval original_size=len(_raw)
+| eval transformation_type=case(
+    match(_raw, "(?i)(heartbeat|ping|alive|status.ok)"), "heartbeat_to_metric",
+    match(_raw, "(?i)(error|exception|fail|alert)"), "error_preserve", 
+    match(_raw, "(?i)(debug|trace)"), "debug_compress",
+    1=1, "standard"
+)
+| eval compressed_log=case(
+    transformation_type="heartbeat_to_metric", 
+        "HEARTBEAT_METRIC: " + host + " status=OK",
+    transformation_type="error_preserve", 
+        _raw,
+    transformation_type="debug_compress", 
+        substr(_raw, 1, 100) + "...[DEBUG_SUMMARY]",
+    1=1, substr(_raw, 1, 200)
+)
+| eval compressed_size=len(compressed_log)
+| eval reduction

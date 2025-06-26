@@ -1,0 +1,9 @@
+filter using eval 
+random()%100 < case(
+    match(_raw, "(?i)(SECURITY|ERROR|BREACH|MALWARE|UNAUTHORIZED|CRITICAL|FATAL)"), 100,
+    match(_raw, "(?i)(WARN|WARNING|CONFIG|RESTART|TIMEOUT)"), 50,
+    match(_raw, "(?i)(INFO|NOTICE)"), 15,
+    match(_raw, "(?i)(DEBUG|TRACE|VERBOSE)"), 3,
+    match(_raw, "(?i)(HEARTBEAT|KEEPALIVE|PING|HEALTH)"), 1,
+    1=1, 20
+)

@@ -1,0 +1,8 @@
+set index 
+case(
+    match(_raw, "(?i)(SECURITY|ERROR|BREACH|MALWARE|UNAUTHORIZED|CRITICAL|FATAL)"), "main_security",
+    match(_raw, "(?i)(WARN|WARNING|CONFIG|RESTART|TIMEOUT)"), "main_operational",
+    match(_raw, "(?i)(DEBUG|TRACE|VERBOSE)"), "main_debug",
+    match(_raw, "(?i)(HEARTBEAT|KEEPALIVE|PING|HEALTH)"), "log_metrics",
+    1=1, "main_operational"
+)

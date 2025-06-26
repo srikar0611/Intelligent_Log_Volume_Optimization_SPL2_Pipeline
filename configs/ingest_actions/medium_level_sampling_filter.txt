@@ -1,0 +1,8 @@
+filter using eval 
+random()%100 < case(
+    match(_raw, "(?i)(ERROR|CRITICAL|FATAL|BREACH)"), 100,
+    match(_raw, "(?i)(WARN|WARNING)"), 70,
+    match(_raw, "(?i)(INFO)"), 30,
+    match(_raw, "(?i)(DEBUG|TRACE)"), 10,
+    1=1, 50
+)

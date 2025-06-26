@@ -1,0 +1,23 @@
+eval criticality=case(
+    match(_raw, "SECURITY|ERROR|BREACH|MALWARE|UNAUTHORIZED|CRITICAL|FATAL"), 10,
+    match(_raw, "WARN|WARNING|CONFIG|RESTART|TIMEOUT"), 7,
+    match(_raw, "INFO|NOTICE"), 5,
+    match(_raw, "DEBUG|TRACE|VERBOSE"), 3,
+    match(_raw, "HEARTBEAT|KEEPALIVE|PING|HEALTH"), 1,
+    1=1, 4
+),
+log_type=case(
+    criticality>=9, "security",
+    criticality>=7, "operational", 
+    criticality>=5, "informational",
+    criticality>=3, "debug",
+    1=1, "noise"
+),
+sample_rate=case(
+    log_type="security", 100,
+    log_type="operational", 50,
+    log_type="informational", 15,
+    log_type="debug", 3,
+    log_type="noise", 1
+),
+should_keep=if(random()%100 < sample_rate, 1, 0)
