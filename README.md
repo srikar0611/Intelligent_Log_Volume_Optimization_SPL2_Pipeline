@@ -9,11 +9,11 @@
 ## 🎬 Live Demo
 
 <div align="center">
-  <video width="800" controls>
-    <source src="./assets/demo.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-  <p><em>Watch the Intelligent Log Optimization Pipeline in action - Real-time log processing and volume reduction</em></p>
+
+![Demo Video](./assets/demo.mp4)
+
+*Watch the Intelligent Log Optimization Pipeline in action - Real-time log processing and volume reduction*
+
 </div>
 
 ---
