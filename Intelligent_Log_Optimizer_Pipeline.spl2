@@ -1,0 +1,266 @@
+/*
+ * ============================================================================
+ * INTELLIGENT LOG VOLUME OPTIMIZATION PIPELINE - SPLUNK CLOUD INGEST PROCESSOR
+ * ============================================================================
+ * 
+ * Purpose: Reduce enterprise log storage costs by 45-60% while preserving 
+ *          critical data integrity through intelligent classification and sampling
+ * 
+ * Single Pipeline Version - Compatible with Splunk Cloud Ingest Processor
+ * 
+ * ============================================================================
+ */
+
+$pipeline = | from $source
+    
+    // ========================================================================
+    // STAGE 1: INITIAL PROCESSING & METADATA ENRICHMENT
+    // ========================================================================
+    // Add unique identifiers and capture original log size for tracking
+    
+    | eval event_id = md5(_raw . _time . host),
+           original_size = len(_raw),
+           processing_timestamp = _time
+    
+    // ========================================================================
+    // STAGE 2: INTELLIGENT LOG CLASSIFICATION
+    // ========================================================================
+    // Classify logs by business criticality using pattern matching
+    // Scale: 1 (noise) to 10 (critical security events)
+    
+    | eval criticality = case(
+        // Critical security events - highest priority (10)
+        match(_raw, "(?i)(SECURITY|ERROR|BREACH|MALWARE|UNAUTHORIZED|CRITICAL|FATAL|ATTACK|EXPLOIT|VULNERABILITY)"), 10,
+        
+        // High priority operational events (8)
+        match(_raw, "(?i)(ALERT|INCIDENT|FAILURE|EXCEPTION|CORRUPTION|RESTART|SHUTDOWN)"), 8,
+        
+        // Medium priority warnings (7)
+        match(_raw, "(?i)(WARN|WARNING|CONFIG|TIMEOUT|RETRY|SLOW|DEGRADED)"), 7,
+        
+        // Informational events (5)
+        match(_raw, "(?i)(INFO|NOTICE|SUCCESS|COMPLETE|START|STOP)"), 5,
+        
+        // Debug events (3)
+        match(_raw, "(?i)(DEBUG|TRACE|VERBOSE|DETAIL)"), 3,
+        
+        // Routine system heartbeats (1)
+        match(_raw, "(?i)(HEARTBEAT|KEEPALIVE|PING|HEALTH|STATUS)"), 1,
+        
+        // Default for unclassified logs (4)
+        1=1, 4
+    )
+    
+    // Map criticality scores to business categories
+    | eval log_category = case(
+        criticality >= 9, "critical_security",
+        criticality >= 7, "operational_priority",
+        criticality >= 5, "informational",
+        criticality >= 3, "debug_verbose",
+        1=1, "system_routine"
+    )
+    
+    // ========================================================================
+    // STAGE 3: STORAGE TIER ASSIGNMENT
+    // ========================================================================
+    // Assign storage tiers based on criticality for cost optimization
+    
+    | eval storage_tier = case(
+        criticality >= 8, "HOT",     // Fast access, expensive storage
+        criticality >= 5, "WARM",    // Standard access, moderate cost
+        1=1, "COLD"                  // Archive storage, lowest cost
+    ),
+    retention_days = case(
+        storage_tier = "HOT", 90,    // 3 months for critical data
+        storage_tier = "WARM", 365,  // 1 year for operational data
+        storage_tier = "COLD", 2555  // 7 years for compliance/archive
+    )
+    
+    // ========================================================================
+    // STAGE 4: INTELLIGENT SAMPLING STRATEGY
+    // ========================================================================
+    // Apply different sampling rates based on log importance
+    // Higher criticality = higher preservation rate
+    
+    | eval sample_rate = case(
+        log_category = "critical_security", 100,    // Preserve all security events
+        log_category = "operational_priority", 60,  // Keep 60% of operational logs
+        log_category = "informational", 25,         // Keep 25% of info logs
+        log_category = "debug_verbose", 5,          // Keep 5% of debug logs
+        log_category = "system_routine", 2,         // Keep 2% of routine logs
+        1=1, 15                                     // Default 15% for others
+    )
+    
+    // Generate random number and apply sampling decision
+    | eval random_number = (random() % 100) + 1,
+           sampling_decision = if(random_number <= sample_rate, "KEEP", "FILTER")
+    
+    // Only process logs that pass the sampling filter
+    | where random_number <= sample_rate
+    
+    // ========================================================================
+    // STAGE 5: LOG TRANSFORMATION & COMPRESSION
+    // ========================================================================
+    // Transform logs to reduce size while preserving essential information
+    
+    | eval transformation_type = case(
+        // Convert heartbeats to metrics format
+        match(_raw, "(?i)(heartbeat|ping|alive|status\\.ok|health)"), "heartbeat_to_metric",
+        
+        // Preserve critical events unchanged
+        log_category = "critical_security", "preserve_full",
+        
+        // Compress debug logs significantly
+        log_category = "debug_verbose", "debug_compress",
+        
+        // Summarize repetitive patterns
+        match(_raw, "(?i)(routine|periodic|scheduled)"), "pattern_summarize",
+        
+        // Standard compression for others
+        1=1, "standard_compress"
+    )
+    
+    // Apply the actual transformation
+    | eval transformed_log = case(
+        // Convert heartbeats to structured metrics
+        transformation_type = "heartbeat_to_metric",
+            "HEARTBEAT_METRIC: host=" + host + " status=OK timestamp=" + strftime(_time, "%Y-%m-%d %H:%M:%S") + " source=" + source,
+        
+        // Keep critical security events unchanged
+        transformation_type = "preserve_full",
+            _raw,
+        
+        // Heavily compress debug logs
+        transformation_type = "debug_compress",
+            substr(_raw, 1, 80) + "...[DEBUG_COMPRESSED_ID:" + substr(md5(_raw), 1, 8) + "]",
+        
+        // Summarize repetitive patterns
+        transformation_type = "pattern_summarize",
+            "PATTERN_SUMMARY: " + substr(_raw, 1, 60) + "...[PATTERN_ID:" + substr(md5(_raw), 1, 8) + "]",
+        
+        // Standard truncation for long logs
+        transformation_type = "standard_compress",
+            if(len(_raw) > 400, substr(_raw, 1, 400) + "...[TRUNCATED]", _raw),
+        
+        // Fallback - return original
+        1=1, _raw
+    )
+    
+    // ========================================================================
+    // STAGE 6: COMPRESSION METRICS CALCULATION
+    // ========================================================================
+    // Calculate space savings achieved by transformation
+    
+    | eval compressed_size = len(transformed_log),
+           size_reduction_bytes = original_size - compressed_size,
+           compression_ratio_raw = if(original_size > 0, (size_reduction_bytes * 100) / original_size, 0),
+           compression_ratio = floor(compression_ratio_raw * 100) / 100
+    
+    // ========================================================================
+    // STAGE 7: INDEX ROUTING & DESTINATION ASSIGNMENT
+    // ========================================================================
+    // Route optimized logs to appropriate indexes based on content and type
+    
+    | eval target_index = case(
+        // Critical security events go to security index
+        log_category = "critical_security", "main_security",
+        
+        // Operational events go to operational index
+        log_category = "operational_priority", "main_operational",
+        
+        // Debug logs go to debug index
+        log_category = "debug_verbose", "main_debug",
+        
+        // Converted heartbeat metrics go to metrics index
+        transformation_type = "heartbeat_to_metric", "log_metrics",
+        
+        // Everything else goes to operational index
+        1=1, "main_operational"
+    )
+    
+    // ========================================================================
+    // STAGE 8: OPTIMIZATION METADATA ENRICHMENT
+    // ========================================================================
+    // Add fields for monitoring and reporting pipeline performance
+    
+    | eval optimization_log_category = log_category,
+           optimization_criticality = criticality,
+           optimization_sample_rate = sample_rate,
+           optimization_original_size = original_size,
+           optimization_compressed_size = compressed_size,
+           optimization_size_reduction = size_reduction_bytes,
+           optimization_compression_ratio = compression_ratio,
+           optimization_transformation_type = transformation_type,
+           optimization_target_index = target_index,
+           optimization_storage_tier = storage_tier,
+           optimization_retention_days = retention_days,
+           optimization_pipeline_version = "v2.3_cloud_compatible",
+           optimization_processing_timestamp = processing_timestamp
+    
+    // ========================================================================
+    // STAGE 9: QUALITY ASSURANCE & VALIDATION
+    // ========================================================================
+    // Perform final quality checks before sending to destination
+    
+    | eval quality_data_integrity = if(len(transformed_log) > 0, "PASS", "FAIL"),
+           quality_classification = if(criticality >= 1 AND criticality <= 10, "PASS", "FAIL"),
+           quality_sampling = if(sample_rate >= 1 AND sample_rate <= 100, "PASS", "FAIL"),
+           quality_routing = if(len(target_index) > 0, "PASS", "FAIL"),
+           quality_compression = if(compression_ratio >= 0, "PASS", "FAIL")
+    
+    // Calculate overall quality score
+    | eval quality_score = case(
+        quality_data_integrity = "FAIL", 0,
+        quality_classification = "FAIL", 0,
+        quality_sampling = "FAIL", 0,
+        quality_routing = "FAIL", 0,
+        quality_compression = "FAIL", 0,
+        1=1, 1
+    )
+    
+    // ========================================================================
+    // STAGE 10: FINAL OUTPUT PREPARATION
+    // ========================================================================
+    // Set final fields and route to destination
+    
+    // Set the optimized log as the new raw event
+    | eval _raw = transformed_log,
+           index = target_index
+    
+    // Add final routing metadata
+    | eval pipeline_status = if(quality_score = 1, "SUCCESS", "QUALITY_ALERT"),
+           cost_savings_estimated = case(
+               compression_ratio > 50, "HIGH",
+               compression_ratio > 25, "MEDIUM", 
+               compression_ratio > 0, "LOW",
+               1=1, "NONE"
+           )
+    
+    // Route to destination (configured in Splunk Cloud interface)
+    | into $destination;
+
+/*
+ * ============================================================================
+ * PIPELINE MONITORING & REPORTING QUERIES
+ * ============================================================================
+ * 
+ * Use these searches to monitor pipeline performance:
+ * 
+ * 1. Volume Reduction by Category:
+ *    index=main_* optimization_log_category=*
+ *    | stats avg(optimization_compression_ratio) by optimization_log_category
+ * 
+ * 2. Cost Savings Summary:
+ *    index=main_* cost_savings_estimated=*
+ *    | stats count by cost_savings_estimated, optimization_storage_tier
+ * 
+ * 3. Quality Monitoring:
+ *    index=main_* quality_score=*
+ *    | stats count by quality_score, pipeline_status
+ * 
+ * 4. Sampling Effectiveness:
+ *    index=main_* optimization_sample_rate=*
+ *    | stats count by optimization_log_category, optimization_sample_rate
+ * 
+ * ============================================================================
+ */
