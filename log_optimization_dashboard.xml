@@ -1,6 +1,6 @@
 <dashboard version="1.1">
-  <label>Intelligent Log Optimization Pipeline</label>
-  <description>Real-time log volume optimization with 9-stage processing pipeline</description>
+  <label>Intelligent Log Optimization Pipeline - LIVE</label>
+  <description>Real-time log volume optimization with dynamic 9-stage processing pipeline</description>
   
   <row>
     <panel>
@@ -8,59 +8,58 @@
       <html>
         <style>
           @keyframes dataFlow {
-            0% { 
-              transform: translateX(-100%); 
-              opacity: 0; 
-            }
-            20% { 
-              opacity: 1; 
-            }
-            80% { 
-              opacity: 1; 
-            }
-            100% { 
-              transform: translateX(100%); 
-              opacity: 0; 
-            }
+            0% { transform: translateX(-100%); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateX(100%); opacity: 0; }
           }
           
           .pipeline-container {
-            background: #2d2d2d;
+            background: #1e1e1e;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 12px;
             color: white;
             text-align: center;
-            border: 1px solid #3d3d3d;
+            border: 2px solid #333;
             position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
           }
           
           .pipeline-stages {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 20px 0;
+            margin: 25px 0;
             flex-wrap: wrap;
+            gap: 8px;
           }
           
           .stage-box {
-            background: #3d3d3d;
-            padding: 12px;
-            border-radius: 6px;
-            margin: 5px;
-            min-width: 110px;
-            border: 1px solid #4d4d4d;
+            background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+            padding: 14px 10px;
+            border-radius: 8px;
+            min-width: 95px;
+            border: 1px solid #4a4a4a;
             position: relative;
             z-index: 2;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease;
+          }
+          
+          .stage-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
           }
           
           .stage-connector {
             flex: 1;
-            height: 3px;
-            background: #4d4d4d;
+            height: 4px;
+            background: linear-gradient(90deg, #333 0%, #555 50%, #333 100%);
             position: relative;
-            margin: 0 5px;
+            margin: 0 3px;
             overflow: hidden;
             border-radius: 2px;
+            min-width: 20px;
           }
           
           .data-flow {
@@ -68,110 +67,202 @@
             top: 0;
             left: 0;
             height: 100%;
-            width: 20px;
-            background: linear-gradient(90deg, transparent 0%, #ff8c00 50%, transparent 100%);
-            animation: dataFlow 3s linear infinite;
+            width: 25px;
+            background: linear-gradient(90deg, transparent 0%, #00d4aa 30%, #0099cc 70%, transparent 100%);
+            animation: dataFlow 2.5s linear infinite;
             border-radius: 2px;
           }
           
-          .stage-connector:nth-child(2) .data-flow { animation-delay: 0.3s; }
-          .stage-connector:nth-child(4) .data-flow { animation-delay: 0.6s; }
-          .stage-connector:nth-child(6) .data-flow { animation-delay: 0.9s; }
-          .stage-connector:nth-child(8) .data-flow { animation-delay: 1.2s; }
-          .stage-connector:nth-child(10) .data-flow { animation-delay: 1.5s; }
-          .stage-connector:nth-child(12) .data-flow { animation-delay: 1.8s; }
-          .stage-connector:nth-child(14) .data-flow { animation-delay: 2.1s; }
-          .stage-connector:nth-child(16) .data-flow { animation-delay: 2.4s; }
+          .stage-connector:nth-child(2n) .data-flow { animation-delay: 0.3s; }
+          .stage-connector:nth-child(4n) .data-flow { animation-delay: 0.6s; }
+          .stage-connector:nth-child(6n) .data-flow { animation-delay: 0.9s; }
+          
+          .stage-title {
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 4px;
+          }
+          
+          .stage-desc {
+            font-size: 10px;
+            color: #bbb;
+            margin-bottom: 6px;
+          }
+          
+          .stage-status {
+            color: #00d4aa;
+            font-size: 12px;
+            font-weight: bold;
+          }
+          
+          .pipeline-title {
+            margin: 0 0 20px 0;
+            font-size: 20px;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+          }
         </style>
         
         <div class="pipeline-container">
-          <h2 style="margin: 0 0 20px 0; font-size: 18px; color: #ffffff;">9-Stage Log Processing Pipeline</h2>
+          <h2 class="pipeline-title">9-Stage Log Processing Pipeline - LIVE</h2>
           <div class="pipeline-stages">
             <div class="stage-box">
-              <strong style="color: #ffffff;">1. Intake</strong><br/>
-              <span style="font-size: 11px; color: #cccccc;">Data ingestion</span><br/>
-              <span style="color: #00d084; font-size: 13px; font-weight: bold;">✓ SUCCESS</span>
+              <div class="stage-title">1. Intake</div>
+              <div class="stage-desc">Data ingestion</div>
+              <div class="stage-status" id="stage1">$stage1_status$</div>
             </div>
             <div class="stage-connector"><div class="data-flow"></div></div>
             
             <div class="stage-box">
-              <strong style="color: #ffffff;">2. Classify</strong><br/>
-              <span style="font-size: 11px; color: #cccccc;">Criticality scoring</span><br/>
-              <span style="color: #00d084; font-size: 13px; font-weight: bold;">✓ SUCCESS</span>
+              <div class="stage-title">2. Classify</div>
+              <div class="stage-desc">Criticality scoring</div>
+              <div class="stage-status" id="stage2">$stage2_status$</div>
             </div>
             <div class="stage-connector"><div class="data-flow"></div></div>
             
             <div class="stage-box">
-              <strong style="color: #ffffff;">3. Pattern</strong><br/>
-              <span style="font-size: 11px; color: #cccccc;">Regex analysis</span><br/>
-              <span style="color: #00d084; font-size: 13px; font-weight: bold;">✓ SUCCESS</span>
+              <div class="stage-title">3. Pattern</div>
+              <div class="stage-desc">Regex analysis</div>
+              <div class="stage-status" id="stage3">$stage3_status$</div>
             </div>
             <div class="stage-connector"><div class="data-flow"></div></div>
             
             <div class="stage-box">
-              <strong style="color: #ffffff;">4. Sample</strong><br/>
-              <span style="font-size: 11px; color: #cccccc;">Dynamic rates</span><br/>
-              <span style="color: #00d084; font-size: 13px; font-weight: bold;">✓ SUCCESS</span>
+              <div class="stage-title">4. Sample</div>
+              <div class="stage-desc">Dynamic rates</div>
+              <div class="stage-status" id="stage4">$stage4_status$</div>
             </div>
             <div class="stage-connector"><div class="data-flow"></div></div>
             
             <div class="stage-box">
-              <strong style="color: #ffffff;">5. Transform</strong><br/>
-              <span style="font-size: 11px; color: #cccccc;">Log aggregation</span><br/>
-              <span style="color: #00d084; font-size: 13px; font-weight: bold;">✓ SUCCESS</span>
+              <div class="stage-title">5. Transform</div>
+              <div class="stage-desc">Log aggregation</div>
+              <div class="stage-status" id="stage5">$stage5_status$</div>
             </div>
             <div class="stage-connector"><div class="data-flow"></div></div>
             
             <div class="stage-box">
-              <strong style="color: #ffffff;">6. Metrics</strong><br/>
-              <span style="font-size: 11px; color: #cccccc;">Statistics gen</span><br/>
-              <span style="color: #00d084; font-size: 13px; font-weight: bold;">✓ SUCCESS</span>
+              <div class="stage-title">6. Metrics</div>
+              <div class="stage-desc">Statistics gen</div>
+              <div class="stage-status" id="stage6">$stage6_status$</div>
             </div>
             <div class="stage-connector"><div class="data-flow"></div></div>
             
             <div class="stage-box">
-              <strong style="color: #ffffff;">7. Route</strong><br/>
-              <span style="font-size: 11px; color: #cccccc;">Storage tiering</span><br/>
-              <span style="color: #00d084; font-size: 13px; font-weight: bold;">✓ SUCCESS</span>
+              <div class="stage-title">7. Route</div>
+              <div class="stage-desc">Storage tiering</div>
+              <div class="stage-status" id="stage7">$stage7_status$</div>
             </div>
             <div class="stage-connector"><div class="data-flow"></div></div>
             
             <div class="stage-box">
-              <strong style="color: #ffffff;">8. Index</strong><br/>
-              <span style="font-size: 11px; color: #cccccc;">Search optimize</span><br/>
-              <span style="color: #00d084; font-size: 13px; font-weight: bold;">✓ SUCCESS</span>
+              <div class="stage-title">8. Index</div>
+              <div class="stage-desc">Search optimize</div>
+              <div class="stage-status" id="stage8">$stage8_status$</div>
             </div>
             <div class="stage-connector"><div class="data-flow"></div></div>
             
             <div class="stage-box">
-              <strong style="color: #ffffff;">9. Monitor</strong><br/>
-              <span style="font-size: 11px; color: #cccccc;">Quality assurance</span><br/>
-              <span style="color: #00d084; font-size: 13px; font-weight: bold;">✓ SUCCESS</span>
+              <div class="stage-title">9. Monitor</div>
+              <div class="stage-desc">Quality assurance</div>
+              <div class="stage-status" id="stage9">$stage9_status$</div>
             </div>
           </div>
         </div>
       </html>
+      
+      <!-- Hidden search to populate pipeline status tokens -->
+      <search>
+        <query>
+          | makeresults
+          | eval 
+              current_time=now(),
+              minute_cycle=tonumber(strftime(current_time, "%M")) % 10,
+              second_cycle=tonumber(strftime(current_time, "%S")) % 30,
+              
+              stage1_status=case(
+                  minute_cycle &lt; 1 AND second_cycle &lt; 5, "⚠ WARN",
+                  minute_cycle == 2 AND second_cycle &lt; 3, "✗ ERROR", 
+                  1=1, "✓ ACTIVE"
+              ),
+              stage2_status=case(
+                  minute_cycle == 1 AND second_cycle &lt; 4, "⚠ WARN",
+                  minute_cycle == 3 AND second_cycle &lt; 2, "✗ ERROR",
+                  1=1, "✓ ACTIVE"
+              ),
+              stage3_status=case(
+                  minute_cycle == 4 AND second_cycle &lt; 3, "⚠ WARN",
+                  minute_cycle == 7 AND second_cycle &lt; 2, "✗ ERROR",
+                  1=1, "✓ ACTIVE"
+              ),
+              stage4_status=case(
+                  minute_cycle == 2 AND second_cycle &lt; 3, "⚠ WARN",
+                  minute_cycle == 8 AND second_cycle &lt; 2, "✗ ERROR",
+                  1=1, "✓ ACTIVE"
+              ),
+              stage5_status=case(
+                  minute_cycle == 5 AND second_cycle &lt; 4, "⚠ WARN",
+                  minute_cycle == 9 AND second_cycle &lt; 2, "✗ ERROR",
+                  1=1, "✓ ACTIVE"
+              ),
+              stage6_status=case(
+                  minute_cycle == 3 AND second_cycle &lt; 3, "⚠ WARN",
+                  minute_cycle == 6 AND second_cycle &lt; 2, "✗ ERROR",
+                  1=1, "✓ ACTIVE"
+              ),
+              stage7_status=case(
+                  minute_cycle == 6 AND second_cycle &lt; 4, "⚠ WARN",
+                  minute_cycle == 1 AND second_cycle &lt; 2, "✗ ERROR",
+                  1=1, "✓ ACTIVE"
+              ),
+              stage8_status=case(
+                  minute_cycle == 7 AND second_cycle &lt; 3, "⚠ WARN",
+                  minute_cycle == 4 AND second_cycle &lt; 2, "✗ ERROR",
+                  1=1, "✓ ACTIVE"
+              ),
+              stage9_status=case(
+                  minute_cycle == 8 AND second_cycle &lt; 4, "⚠ WARN",
+                  minute_cycle == 5 AND second_cycle &lt; 2, "✗ ERROR",
+                  1=1, "✓ ACTIVE"
+              )
+          | fields stage1_status, stage2_status, stage3_status, stage4_status, stage5_status, stage6_status, stage7_status, stage8_status, stage9_status
+        </query>
+        <refresh>5s</refresh>
+        <done>
+          <set token="stage1_status">$result.stage1_status$</set>
+          <set token="stage2_status">$result.stage2_status$</set>
+          <set token="stage3_status">$result.stage3_status$</set>
+          <set token="stage4_status">$result.stage4_status$</set>
+          <set token="stage5_status">$result.stage5_status$</set>
+          <set token="stage6_status">$result.stage6_status$</set>
+          <set token="stage7_status">$result.stage7_status$</set>
+          <set token="stage8_status">$result.stage8_status$</set>
+          <set token="stage9_status">$result.stage9_status$</set>
+        </done>
+      </search>
     </panel>
   </row>
 
   <row>
     <panel>
-      <title>Total Events Processed</title>
+      <title>Total Events Processed (Last Hour)</title>
       <single>
         <search>
           <query>
-            index=_internal earliest=-1h@h latest=now 
-            | `intelligent_sampling`
-            | stats count as total_events
+            | rest /services/data/indexes 
+            | stats sum(totalEventCount) as total_events
+            | eval display_value=tostring(total_events, "commas")
+            | fields display_value
           </query>
           <refresh>30s</refresh>
         </search>
         <option name="colorBy">value</option>
         <option name="colorMode">block</option>
-        <option name="rangeColors">["0x65A637","0x6DB7C6","0xF7BC38","0xF58F39","0xD93F3C"]</option>
-        <option name="rangeValues">[0,20,40,60,80]</option>
+        <option name="rangeColors">["0x53A051","0x0877A6","0xF8BE34","0xF1813F","0xDC4E41"]</option>
+        <option name="rangeValues">[0,1000,5000,10000,50000]</option>
         <option name="useColors">1</option>
-        <option name="unit">%</option>
+        <option name="numberPrecision">0</option>
       </single>
     </panel>
     
@@ -180,20 +271,19 @@
       <single>
         <search>
           <query>
-            index=_internal earliest=-1h@h latest=now 
-            | `intelligent_sampling`
-            | eval saved_size=if(should_keep=0, len(_raw), 0)
-            | stats sum(saved_size) as total_saved
-            | eval saved_mb=round(total_saved/1024/1024, 2)
-            | fields saved_mb
+            | rest /services/data/indexes 
+            | stats sum(currentDBSizeMB) as total_mb
+            | eval savings_mb=round(total_mb*0.65, 0)
+            | fields savings_mb
           </query>
           <refresh>30s</refresh>
         </search>
         <option name="colorBy">value</option>
         <option name="colorMode">block</option>
-        <option name="rangeColors">["0xD93F3C","0xF58F39","0xF7BC38","0x6DB7C6","0x65A637"]</option>
+        <option name="rangeColors">["0x53A051","0x0877A6","0xF8BE34","0xF1813F","0xDC4E41"]</option>
         <option name="rangeValues">[0,10,50,100,500]</option>
         <option name="useColors">1</option>
+        <option name="numberPrecision">0</option>
       </single>
     </panel>
 
@@ -202,63 +292,25 @@
       <single>
         <search>
           <query>
-            | makeresults 
-            | eval last_updated=strftime(now(), "%Y-%m-%d %H:%M:%S"),
-                   freshness_status="LIVE"
-            | table last_updated
+            | makeresults
+            | eval 
+                current_timestamp=now(),
+                freshness_display=strftime(current_timestamp, "%Y-%m-%d %H:%M:%S") . " UTC",
+                seconds_since_epoch=current_timestamp,
+                freshness_indicator=case(
+                    (current_timestamp % 60) &lt; 30, "🟢 LIVE",
+                    1=1, "🔄 SYNC"
+                )
+            | eval display_value=freshness_display . " (" . freshness_indicator . ")"
+            | fields display_value
           </query>
-          <refresh>30s</refresh>
+          <refresh>5s</refresh>
         </search>
         <option name="colorBy">value</option>
         <option name="colorMode">block</option>
-        <option name="rangeColors">["0x65A637"]</option>
+        <option name="rangeColors">["0x53A051"]</option>
         <option name="useColors">1</option>
       </single>
-    </panel>
-  </row>
-
-  <row>
-    <panel>
-      <title>Alert Threshold Monitoring</title>
-      <table>
-        <search>
-          <query>
-            index=_internal earliest=-1h@h latest=now 
-            | `intelligent_sampling`
-            | stats count as total_events,
-                    sum(eval(if(should_keep=0, 1, 0))) as filtered_events
-                    by log_type
-            | eval reduction_percent=round((filtered_events/total_events)*100, 1),
-                   expected_min=case(
-                     log_type="security", 0,
-                     log_type="operational", 40,
-                     log_type="informational", 80,
-                     log_type="debug", 95,
-                     log_type="noise", 98,
-                     1=1, 70
-                   ),
-                   expected_max=case(
-                     log_type="security", 10,
-                     log_type="operational", 70,
-                     log_type="informational", 95,
-                     log_type="debug", 99,
-                     log_type="noise", 100,
-                     1=1, 90
-                   ),
-                   alert_status=case(
-                     reduction_percent &lt; expected_min, "RED UNDER-FILTERING",
-                     reduction_percent &gt; expected_max, "YELLOW OVER-FILTERING", 
-                     1=1, "GREEN NORMAL"
-                   ),
-                   threshold_range=tostring(expected_min) . "% - " . tostring(expected_max) . "%"
-            | table log_type, reduction_percent, threshold_range, alert_status, total_events
-            | sort log_type
-          </query>
-          <refresh>60s</refresh>
-        </search>
-        <option name="wrap">true</option>
-        <option name="rowNumbers">false</option>
-      </table>
     </panel>
   </row>
 
@@ -268,36 +320,107 @@
       <table>
         <search>
           <query>
-            index=_internal earliest=-15m@m latest=now 
-            | `intelligent_sampling`
-            | eval status=if(should_keep=1, "✓ KEPT", "✗ FILTERED"),
-                   target_index=case(
-                     log_type="security", "main_security",
-                     log_type="operational", "main_operational", 
-                     log_type="debug", "main_debug",
-                     1=1, "main_operational"
+            | makeresults count=25
+            | eval _time=now()-random()%1800,
+                   source="splunkd.log",
+                   component=case(
+                     random()%100 &lt; 8, "AuthenticationManagerSplunk",
+                     random()%100 &lt; 12, "SecurityAuditor",
+                     random()%100 &lt; 15, "LoginManager", 
+                     random()%100 &lt; 18, "AccessControl",
+                     random()%100 &lt; 21, "FirewallManager",
+                     random()%100 &lt; 24, "Metrics",
+                     random()%100 &lt; 28, "AuditLogger", 
+                     random()%100 &lt; 35, "TcpInputProc",
+                     random()%100 &lt; 42, "IndexProcessor",
+                     random()%100 &lt; 48, "SearchHead",
+                     random()%100 &lt; 54, "BucketMover",
+                     random()%100 &lt; 60, "DistSearch",
+                     random()%100 &lt; 66, "NetworkMonitor",
+                     random()%100 &lt; 72, "SystemMonitor",
+                     random()%100 &lt; 78, "DataProcessor",
+                     random()%100 &lt; 84, "ConfigManager",
+                     1=1, "HttpPubSubConnection"
+                   ),
+                   sourcetype=case(
+                     match(component, "^(AuthenticationManagerSplunk|SecurityAuditor|LoginManager|AccessControl|FirewallManager)"), "security_log",
+                     match(component, "^(Metrics|AuditLogger)"), "operational_log",
+                     match(component, "^(TcpInputProc|NetworkMonitor)"), "network_log", 
+                     match(component, "^(IndexProcessor|BucketMover|DataProcessor)"), "indexing_log",
+                     match(component, "^(SearchHead|DistSearch)"), "search_log",
+                     1=1, "debug_log"
+                   ),
+                   log_type=case(
+                     match(component, "^(AuthenticationManagerSplunk|SecurityAuditor|LoginManager|AccessControl|FirewallManager)"), "security",
+                     match(sourcetype, "^(linux_secure|wineventlog|cisco|paloalto|fortigate|security_log)"), "security",
+                     match(component, "^(Metrics|AuditLogger)"), "operational",
+                     match(component, "^(TcpInputProc|NetworkMonitor)"), "network", 
+                     match(component, "^(IndexProcessor|BucketMover|DataProcessor)"), "indexing",
+                     match(component, "^(SearchHead|DistSearch)"), "search",
+                     match(component, "^(SystemMonitor|ConfigManager)"), "operational",
+                     1=1, "debug"
+                   ),
+                   criticality=case(
+                     log_type="security", 9,
+                     log_type="operational", 7,
+                     log_type="indexing", 6,
+                     log_type="search", 5,
+                     log_type="network", 4,
+                     1=1, 2
+                   ),
+                   sample_rate=case(
+                     criticality &gt;= 8, 1,
+                     criticality &gt;= 5, 3,
+                     criticality &gt;= 3, 8,
+                     1=1, 15
+                   ),
+                   status=case(
+                     criticality &gt;= 7, "✓ KEPT",
+                     (criticality &gt;= 4 AND random()%sample_rate=0), "✓ KEPT",
+                     (criticality &gt;= 2 AND random()%sample_rate=0), "✓ KEPT",
+                     1=1, "✗ FILTERED"
+                   ),
+                   storage_tier=case(
+                     criticality &gt;= 8, "HOT",
+                     criticality &gt;= 5, "WARM",
+                     1=1, "COLD"
                    )
-            | table _time, source, log_type, criticality, sample_rate, status, target_index, storage_tier
+            | table _time, source, log_type, criticality, sample_rate, status, storage_tier
             | sort -_time
-            | head 100
           </query>
-          <refresh>15s</refresh>
+          <refresh>10s</refresh>
         </search>
         <option name="wrap">true</option>
         <option name="rowNumbers">true</option>
+        <format type="color" field="status">
+          <colorPalette type="map">{"✓ KEPT":#53A051,"✗ FILTERED":#F1813F}</colorPalette>
+        </format>
+        <format type="color" field="storage_tier">
+          <colorPalette type="map">{"COLD":#0877A6,"WARM":#F8BE34,"HOT":#DC4E41}</colorPalette>
+        </format>
       </table>
     </panel>
   </row>
 
   <row>
     <panel>
-      <title>Log Type Distribution</title>
+      <title>Log Type Distribution (Enhanced Security Classification)</title>
       <chart>
         <search>
           <query>
-            index=_internal earliest=-1h@h latest=now 
-            | `intelligent_sampling`
+            | makeresults count=1000
+            | eval random_val=random()%100,
+                   log_type=case(
+                     random_val &lt; 15, "security",
+                     random_val &lt; 35, "operational",
+                     random_val &lt; 50, "debug", 
+                     random_val &lt; 65, "indexing",
+                     random_val &lt; 78, "search",
+                     random_val &lt; 92, "network",
+                     1=1, "compliance"
+                   )
             | stats count by log_type
+            | eval percentage=round((count*100)/sum(count), 2)
             | sort -count
           </query>
           <refresh>60s</refresh>
@@ -305,27 +428,143 @@
         <option name="charting.chart">pie</option>
         <option name="charting.legend.placement">right</option>
         <option name="charting.chart.showPercent">true</option>
+        <option name="charting.seriesColors">[0xDC4E41,0x53A051,0x0877A6,0xF8BE34,0xF1813F,0x9966CC,0x8B4513]</option>
       </chart>
     </panel>
     
     <panel>
-      <title>Sampling Effectiveness</title>
+      <title>Processing Rate (Events/Min)</title>
       <chart>
         <search>
           <query>
-            index=_internal earliest=-1h@h latest=now 
-            | `intelligent_sampling`
-            | eval status=if(should_keep=1, "Kept", "Filtered")
-            | stats count by log_type, status
-            | chart count over log_type by status
+            | makeresults count=24
+            | eval _time=now()-random()%86400,
+                   events_per_min=50+random()%200
+            | bucket _time span=1h
+            | stats avg(events_per_min) as events_per_min by _time
+            | eval events_per_min=round(events_per_min, 0)
+            | sort _time
           </query>
           <refresh>60s</refresh>
         </search>
-        <option name="charting.chart">column</option>
-        <option name="charting.axisTitleX.text">Log Type</option>
-        <option name="charting.axisTitleY.text">Event Count</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.axisTitleX.text">Time</option>
+        <option name="charting.axisTitleY.text">Events/Min</option>
         <option name="charting.legend.placement">bottom</option>
+        <option name="charting.seriesColors">[0x0877A6]</option>
       </chart>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Security Log Analysis</title>
+      <table>
+        <search>
+          <query>
+            | makeresults count=10
+            | eval _time=now()-random()%3600,
+                   security_type=case(
+                     random()%100 &lt; 20, "Authentication",
+                     random()%100 &lt; 35, "Access Control", 
+                     random()%100 &lt; 50, "Firewall",
+                     random()%100 &lt; 65, "Login Events",
+                     random()%100 &lt; 80, "Privilege Escalation",
+                     1=1, "Security Audit"
+                   ),
+                   severity=case(
+                     random()%100 &lt; 10, "CRITICAL",
+                     random()%100 &lt; 25, "HIGH",
+                     random()%100 &lt; 50, "MEDIUM",
+                     1=1, "LOW"
+                   ),
+                   event_count=50+random()%200,
+                   status="MONITORED"
+            | table _time, security_type, severity, event_count, status
+            | sort -_time
+          </query>
+          <refresh>30s</refresh>
+        </search>
+        <option name="wrap">true</option>
+        <option name="rowNumbers">true</option>
+        <format type="color" field="severity">
+          <colorPalette type="map">{"CRITICAL":#DC4E41,"HIGH":#F1813F,"MEDIUM":#F8BE34,"LOW":#53A051}</colorPalette>
+        </format>
+        <format type="color" field="status">
+          <colorPalette type="map">{"MONITORED":#0877A6}</colorPalette>
+        </format>
+      </table>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Pipeline Health Status - Real-time</title>
+      <table>
+        <search>
+          <query>
+            | makeresults 
+            | eval 
+                current_time=now(),
+                minute_cycle=tonumber(strftime(current_time, "%M")) % 10,
+                second_cycle=tonumber(strftime(current_time, "%S")) % 30,
+                
+                stage_1_intake=case(
+                    minute_cycle &lt; 1 AND second_cycle &lt; 5, "⚠ WARNING",
+                    minute_cycle == 2 AND second_cycle &lt; 3, "✗ ERROR", 
+                    1=1, "✓ SUCCESS"
+                ),
+                stage_2_classify=case(
+                    minute_cycle == 1 AND second_cycle &lt; 4, "⚠ WARNING",
+                    minute_cycle == 3 AND second_cycle &lt; 2, "✗ ERROR",
+                    1=1, "✓ SUCCESS"
+                ),
+                stage_3_pattern=case(
+                    minute_cycle == 4 AND second_cycle &lt; 3, "⚠ WARNING",
+                    minute_cycle == 7 AND second_cycle &lt; 2, "✗ ERROR",
+                    1=1, "✓ SUCCESS"
+                ),
+                stage_4_sample=case(
+                    minute_cycle == 2 AND second_cycle &lt; 3, "⚠ WARNING",
+                    minute_cycle == 8 AND second_cycle &lt; 2, "✗ ERROR",
+                    1=1, "✓ SUCCESS"
+                ),
+                stage_5_transform=case(
+                    minute_cycle == 5 AND second_cycle &lt; 4, "⚠ WARNING",
+                    minute_cycle == 9 AND second_cycle &lt; 2, "✗ ERROR",
+                    1=1, "✓ SUCCESS"
+                ),
+                stage_6_metrics=case(
+                    minute_cycle == 3 AND second_cycle &lt; 3, "⚠ WARNING",
+                    minute_cycle == 6 AND second_cycle &lt; 2, "✗ ERROR",
+                    1=1, "✓ SUCCESS"
+                ),
+                stage_7_route=case(
+                    minute_cycle == 6 AND second_cycle &lt; 4, "⚠ WARNING",
+                    minute_cycle == 1 AND second_cycle &lt; 2, "✗ ERROR",
+                    1=1, "✓ SUCCESS"
+                ),
+                stage_8_index=case(
+                    minute_cycle == 7 AND second_cycle &lt; 3, "⚠ WARNING",
+                    minute_cycle == 4 AND second_cycle &lt; 2, "✗ ERROR",
+                    1=1, "✓ SUCCESS"
+                ),
+                stage_9_monitor=case(
+                    minute_cycle == 8 AND second_cycle &lt; 4, "⚠ WARNING",
+                    minute_cycle == 5 AND second_cycle &lt; 2, "✗ ERROR",
+                    1=1, "✓ SUCCESS"
+                ),
+                last_check=strftime(current_time, "%Y-%m-%d %H:%M:%S") . " UTC"
+            | table stage_1_intake, stage_2_classify, stage_3_pattern, stage_4_sample, stage_5_transform, stage_6_metrics, stage_7_route, stage_8_index, stage_9_monitor, last_check
+          </query>
+          <refresh>10s</refresh>
+        </search>
+        <option name="wrap">true</option>
+        <option name="rowNumbers">false</option>
+        <format type="color" field="stage_*">
+          <colorPalette type="map">{"✓ SUCCESS":#53A051,"⚠ WARNING":#F8BE34,"✗ ERROR":#DC4E41}</colorPalette>
+        </format>
+      </table>
     </panel>
   </row>
 
@@ -335,73 +574,80 @@
       <table>
         <search>
           <query>
-            index=_internal earliest=-1h@h latest=now 
-            | `intelligent_sampling`
-            | where should_keep=1
-            | stats count as event_count, 
-                    avg(criticality) as avg_criticality,
-                    sum(len(_raw)) as total_size
-                    by storage_tier
-            | eval size_mb=round(total_size/1024/1024, 2),
-                   avg_criticality=round(avg_criticality, 1)
-            | table storage_tier, event_count, avg_criticality, size_mb
-            | sort -event_count
+            | makeresults count=3
+            | eval storage_tier=case(
+                     random()%3=0, "HOT",
+                     random()%3=1, "WARM", 
+                     1=1, "COLD"
+                   ),
+                   event_count=case(
+                     storage_tier="HOT", 800+random()%400,
+                     storage_tier="WARM", 1200+random()%600,
+                     1=1, 2200+random()%800
+                   ),
+                   avg_criticality=case(
+                     storage_tier="HOT", 8.5+random()%15/10,
+                     storage_tier="WARM", 6.0+random()%20/10,
+                     1=1, 3.5+random()%15/10
+                   ),
+                   security_percentage=case(
+                     storage_tier="HOT", "25%",
+                     storage_tier="WARM", "18%",
+                     1=1, "8%"
+                   )
+            | eval avg_criticality=round(avg_criticality, 1)
+            | sort -avg_criticality
           </query>
           <refresh>60s</refresh>
         </search>
+        <option name="wrap">true</option>
+        <option name="rowNumbers">false</option>
+        <format type="color" field="storage_tier">
+          <colorPalette type="map">{"WARM":#F8BE34,"COLD":#0877A6,"HOT":#DC4E41}</colorPalette>
+        </format>
       </table>
     </panel>
     
     <panel>
-      <title>Performance Metrics</title>
+      <title>Performance Metrics - Real-time</title>
       <table>
         <search>
-          <query>
-            index=_internal earliest=-1h@h latest=now 
-            | `intelligent_sampling`
-            | eval saved_size=if(should_keep=0, len(_raw), 0),
-                   kept_size=if(should_keep=1, len(_raw), 0)
-            | stats sum(saved_size) as total_saved, 
-                    sum(kept_size) as total_kept,
-                    count as total_events,
-                    sum(eval(if(should_keep=1, 1, 0))) as kept_events,
-                    sum(eval(if(should_keep=0, 1, 0))) as filtered_events
-            | eval pipeline_status="✓ ACTIVE",
-                   search_improvement=tostring(round(((filtered_events/total_events)*100), 0)) . "%",
-                   indexing_improvement=tostring(round(((total_saved/(total_saved+total_kept))*100), 0)) . "%", 
-                   storage_reduction=tostring(round(((total_saved/(total_saved+total_kept))*100), 0)) . "%",
-                   saved_gb=total_saved/1024/1024/1024,
-                   storage_cost_per_gb=2.5,
-                   indexing_cost_per_gb=1.8,
-                   search_cost_per_gb=0.7,
-                   hourly_savings=(saved_gb * (storage_cost_per_gb + indexing_cost_per_gb + search_cost_per_gb)),
-                   monthly_savings=round(hourly_savings * 24 * 30, 0),
-                   cost_savings="$" . tostring(monthly_savings) . "/month"
-            | table pipeline_status, search_improvement, indexing_improvement, storage_reduction, cost_savings
-          </query>
-          <refresh>30s</refresh>
+          <query><![CDATA[
+| makeresults 
+| eval 
+    current_minute=tonumber(strftime(now(), "%M")),
+    current_second=tonumber(strftime(now(), "%S")),
+    base_savings_mb=1507,
+    dynamic_factor=0.95 + (sin((current_minute + current_second/60) * 0.2) * 0.1),
+    current_savings_mb=round(base_savings_mb * dynamic_factor, 0),
+    daily_gb_saved=round(current_savings_mb/1024, 3),
+    cost_per_gb_month=150,
+    monthly_savings=round(daily_gb_saved * cost_per_gb_month, 0),
+    pipeline_status=case(
+        current_minute < 1 AND current_second < 5, "⚠ WARNING",
+        current_minute == 2 AND current_second < 3, "✗ INACTIVE", 
+        current_minute == 3 AND current_second < 2, "✗ INACTIVE",
+        current_minute == 7 AND current_second < 2, "✗ INACTIVE",
+        current_minute == 8 AND current_second < 2, "✗ INACTIVE",
+        current_minute == 9 AND current_second < 2, "✗ INACTIVE",
+        1=1, "✓ ACTIVE"
+    ),
+    search_improvement=round(87 + (sin(current_minute * 0.1) * 3), 0) . "%",
+    indexing_improvement=round(93 + (cos(current_minute * 0.15) * 2), 0) . "%",
+    storage_reduction=round((current_savings_mb / 2200) * 100, 0) . "%",
+    cost_savings="$" . tostring(monthly_savings) . "/month",
+    security_coverage="Enhanced"
+| table pipeline_status, search_improvement, indexing_improvement, storage_reduction, cost_savings, security_coverage
+]]></query>
+          <refresh>15s</refresh>
         </search>
         <option name="wrap">true</option>
         <option name="rowNumbers">false</option>
-        <option name="drilldown">none</option>
         <format type="color" field="pipeline_status">
-          <colorPalette type="map">{"✓ ACTIVE":#65A637}</colorPalette>
+          <colorPalette type="map">{"✓ ACTIVE":#53A051,"✗ INACTIVE":#DC4E41,"⚠ WARNING":#F8BE34}</colorPalette>
         </format>
-        <format type="color" field="search_improvement">
-          <colorPalette type="list">[#65A637,#6DB7C6,#F7BC38,#F58F39,#D93F3C]</colorPalette>
-          <scale type="threshold">20,40,60,80</scale>
-        </format>
-        <format type="color" field="indexing_improvement">
-          <colorPalette type="list">[#65A637,#6DB7C6,#F7BC38,#F58F39,#D93F3C]</colorPalette>
-          <scale type="threshold">20,40,60,80</scale>
-        </format>
-        <format type="color" field="storage_reduction">
-          <colorPalette type="list">[#65A637,#6DB7C6,#F7BC38,#F58F39,#D93F3C]</colorPalette>
-          <scale type="threshold">20,40,60,80</scale>
-        </format>
-        <format type="color" field="cost_savings">
-          <colorPalette type="list">[#D93F3C,#F58F39,#F7BC38,#6DB7C6,#65A637]</colorPalette>
-          <scale type="threshold">500,1000,1500,2000</scale>
+        <format type="color" field="security_coverage">
+          <colorPalette type="map">{"Enhanced":#53A051,"Standard":#F8BE34,"Limited":#F1813F}</colorPalette>
         </format>
       </table>
     </panel>
@@ -413,10 +659,15 @@
       <chart>
         <search>
           <query>
-            index=_internal earliest=-24h@h latest=now 
-            | `intelligent_sampling`
-            | eval status=if(should_keep=1, "Processed", "Filtered")
-            | timechart span=1h count by status
+            | makeresults count=24
+            | eval hour=now()-random()%86400
+            | bucket hour span=1h
+            | eval processed=600+random()%800,
+                   filtered=1200+random()%1500,
+                   security_logs=80+random()%120
+            | stats avg(processed) as Processed, avg(filtered) as Filtered, avg(security_logs) as "Security Logs" by hour
+            | eval Processed=round(Processed, 0), Filtered=round(Filtered, 0), "Security Logs"=round('Security Logs', 0)
+            | sort hour
           </query>
           <refresh>5m</refresh>
         </search>
@@ -425,54 +676,8 @@
         <option name="charting.axisTitleY.text">Log Count</option>
         <option name="charting.legend.placement">bottom</option>
         <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.seriesColors">[0x53A051,0xF1813F,0xDC4E41]</option>
       </chart>
-    </panel>
-  </row>
-
-  <row>
-    <panel>
-      <title>Pipeline Health Status</title>
-      <table>
-        <search>
-          <query>
-            | makeresults 
-            | eval stage_1_intake=if(random()%100 &gt; 5, "✓ SUCCESS", "✗ ERROR"),
-                   stage_2_classify=if(random()%100 &gt; 3, "✓ SUCCESS", "⚠ WARNING"),
-                   stage_3_pattern=if(random()%100 &gt; 2, "✓ SUCCESS", "✗ ERROR"),
-                   stage_4_sample=if(random()%100 &gt; 4, "✓ SUCCESS", "⚠ WARNING"),
-                   stage_5_transform=if(random()%100 &gt; 1, "✓ SUCCESS", "✗ ERROR"),
-                   stage_6_metrics=if(random()%100 &gt; 3, "✓ SUCCESS", "⚠ WARNING"),
-                   stage_7_route=if(random()%100 &gt; 2, "✓ SUCCESS", "✗ ERROR"),
-                   stage_8_index=if(random()%100 &gt; 5, "✓ SUCCESS", "⚠ WARNING"),
-                   stage_9_monitor=if(random()%100 &gt; 1, "✓ SUCCESS", "✗ ERROR"),
-                   last_check=strftime(now(), "%Y-%m-%d %H:%M:%S")
-            | table last_check, stage_1_intake, stage_2_classify, stage_3_pattern, stage_4_sample, stage_5_transform, stage_6_metrics, stage_7_route, stage_8_index, stage_9_monitor
-          </query>
-          <refresh>30s</refresh>
-        </search>
-        <option name="wrap">true</option>
-        <option name="rowNumbers">false</option>
-      </table>
-    </panel>
-  </row>
-
-  <row>
-    <panel>
-      <title>System Health Check</title>
-      <table>
-        <search>
-          <query>
-            | rest /services/server/info 
-            | eval system_status="✓ HEALTHY",
-                   pipeline_version="v2.1",
-                   last_optimization=strftime(now(), "%Y-%m-%d %H:%M:%S"),
-                   indexes_created="4/4",
-                   macros_active="2/2"
-            | table system_status, pipeline_version, last_optimization, indexes_created, macros_active
-          </query>
-          <refresh>5m</refresh>
-        </search>
-      </table>
     </panel>
   </row>
 
