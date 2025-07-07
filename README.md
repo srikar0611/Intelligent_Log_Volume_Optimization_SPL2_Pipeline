@@ -199,7 +199,7 @@ Network Anomalies:         Priority 6  (Medium)
 ## 📊 Live Monitoring & Dashboards
 
 ### 📈 Real-Time Pipeline Dashboard
-![Pipeline Overview](dashboard_1.png)
+![Pipeline Overview](assets/dashboard1.png)
 *9-Stage Processing Pipeline with live status indicators and 18M+ events processed*
 
 **Key Metrics:**
@@ -209,7 +209,7 @@ Network Anomalies:         Priority 6  (Medium)
 - **Quality Assurance**: Continuous validation checks
 
 ### 🛡️ Security Analytics Dashboard
-![Security Analytics](dashboard_2.png)
+![Security Analytics](assets/dashboard2.png)
 *Enhanced Security Classification with real-time threat analysis*
 
 **Security Features:**
@@ -219,7 +219,7 @@ Network Anomalies:         Priority 6  (Medium)
 - **Threat Intelligence**: Advanced pattern recognition for security events
 
 ### 📊 Performance Metrics Dashboard
-![Performance Metrics](dashboard_3.png)
+![Performance Metrics](assets/dahsboard3.png)
 *Real-time performance tracking with storage tier analytics*
 
 **Performance Indicators:**
@@ -239,7 +239,7 @@ Network Anomalies:         Priority 6  (Medium)
 ## 🌟 Advanced Features
 
 ### 🤖 Splunk Cloud Ingest Processor Integration
-![Ingest Processor](ingest_processor.png)
+![Ingest Processor](assets/Ingest_deployment.png)
 *Native cloud processing: 187.8 MB inbound → 101.4 MB optimized (46% reduction)*
 
 **Cloud-Native Benefits:**
