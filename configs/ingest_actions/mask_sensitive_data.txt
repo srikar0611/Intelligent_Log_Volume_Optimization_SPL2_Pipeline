@@ -1,3 +1,0 @@
-mask with regex 
-match = "[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}"
-replace = "[EMAIL_MASKED]"
